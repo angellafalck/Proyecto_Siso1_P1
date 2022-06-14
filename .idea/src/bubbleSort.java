@@ -1,12 +1,13 @@
-import java.util.Arrays;
-import java.util.Random;
+import java.io.BufferedReader;
+import java.io.File;
+import java.util.*;
+import java.io.IOException;
 
 public class bubbleSort {
 
     static int contador;
 
-    public static void main(String a[])
-    {
+    public static void main(String a[]) throws IOException {
         initArray();
     }
     public static void bubble_srt( int a[], int n )
@@ -67,10 +68,15 @@ public class bubbleSort {
         System.out.println();
     }
 
-    public static void initArray()
-    {
+    public static void initArray() throws IOException {
         int i;
-        int array[] = {46,40,55,49,39,95,91,52,40,30}; //Valores del arreglo de prueba
+
+        Scanner scanner = new Scanner(new File("file.txt"));
+        int [] array = new int [10000];
+        int j = 0;
+        while(scanner.hasNextInt()){
+            array[j++] = scanner.nextInt();
+        }
 
         //Dividir el arreglo
         int[] left_array = Arrays.copyOfRange(array, 0, array.length/2);
@@ -83,7 +89,9 @@ public class bubbleSort {
             //System.out.print(ar1[i] + "  ");
         }
         */
-
+        //Array
+        System.out.println("Values Before the sort:");
+        print(array);
         //Left Array
         System.out.println("Left values Before the sort:");
         print(left_array);
@@ -112,6 +120,7 @@ public class bubbleSort {
 
         // execution time
         long execution = end - start;
+        System.out.println();
         System.out.println("Bubble Sort Time: " + execution + " nanoseconds");
 
         System.out.print("\nValues after the sort:\n");
