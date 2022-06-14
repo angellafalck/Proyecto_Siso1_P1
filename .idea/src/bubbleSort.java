@@ -57,7 +57,6 @@ public class bubbleSort {
         // Store remaining elements of second array
         while (j < n2)
             arr[k++] = r[j++];
-
     }
 
     public static void print(int[] array)
