@@ -1,16 +1,98 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.io.IOException;
+
+
+
+class MyClass extends Thread{
+
+    int arr[]=new int[10000];
+
+    //Para poder mandar el arreglo como parametro
+    public MyClass(int arr[]) {
+        this.arr=arr;
+
+    }
+    //Override el metodo run para poder inicializar ambos threads
+    @Override
+    public void run(){
+        bubbleSort bb= new bubbleSort(); //Se crea una instancia de la clase para poder llamar las funciones
+        try {
+            bb.initArrays(arr); //Se llama a la función que se quiere ejecutar al inicializar el thread
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+
 
 public class bubbleSort {
 
     static int contador;
 
-    public static void main(String a[]) throws IOException {
-        initArray();
+    public static void main(String a[]) throws IOException, InterruptedException {
+
+
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(new File("file.txt"));
+        } catch (FileNotFoundException e) {
+            //e.printStackTrace();
+        }
+        int [] array = new int [10000];
+        int j = 0;
+        while(scanner.hasNextInt()){
+            array[j++] = scanner.nextInt();
+        }
+
+         //Dividir el arreglo
+        int[] left_array = Arrays.copyOfRange(array, 0, array.length/2);
+        int[] right_array = Arrays.copyOfRange(array, array.length/2, array.length);
+
+
+        // get the start time
+        long start = System.nanoTime();
+
+        //start threads
+        MyClass myclass = new MyClass(left_array);
+        myclass.start();
+        MyClass myclass1 = new MyClass(right_array);
+        myclass1.start();
+
+        //join threads
+        myclass.join();
+        myclass1.join();
+
+        // call the method
+        int [] arr1= myclass.arr;
+        int [] arr2= myclass1.arr;
+        int n1 = arr1.length;
+        int n2 = arr2.length;
+        int[] arr = new int[n1+n2];
+
+        //merge both arrays
+        merge(arr1,arr2, n1, n2, arr);
+
+        // get the end time
+        long end = System.nanoTime();
+
+        // execution time
+        long execution = end - start;
+        System.out.println();
+        System.out.println("Time with Threads: " + execution + " nanoseconds");
+
+        System.out.print("\nValues after the sort:\n");
+        print(arr);
+
+        //System.out.println("\nIntercambios Totales: "+contador);
+
+
     }
-    public static void bubble_srt( int a[], int n )
+
+    public static int[] bubble_srt( int a[], int n )
     {
         int i, j,t=0;
 
@@ -29,6 +111,7 @@ public class bubbleSort {
                 }
             }
         }
+        return a;
 
     }
 
@@ -67,6 +150,10 @@ public class bubbleSort {
         System.out.println();
     }
 
+    public static int[] initArrays(int arr[]) throws IOException {
+        return arr = bubble_srt(arr, arr.length);
+    }
+    /*
     public static void initArray() throws IOException {
         int i;
 
@@ -77,17 +164,11 @@ public class bubbleSort {
             array[j++] = scanner.nextInt();
         }
 
+
         //Dividir el arreglo
         int[] left_array = Arrays.copyOfRange(array, 0, array.length/2);
         int[] right_array = Arrays.copyOfRange(array, array.length/2, array.length);
 
-        /*
-        int[] array = new int[5000]; //Inicializar el arreglo con el tamaño deseado
-        for(i = 0; i <  array.length; i++) {
-            array[i] = (int)(Math.random() * 10000); //Genera numeros random de 0-1000 para llenar el arreglo
-            //System.out.print(ar1[i] + "  ");
-        }
-        */
         //Array
         System.out.println("Values Before the sort:");
         print(array);
@@ -104,15 +185,14 @@ public class bubbleSort {
         long start = System.nanoTime();
 
         // call the method
-        bubble_srt(left_array, left_array.length);
-        bubble_srt(right_array, right_array.length);
-
-        int n1 = left_array.length;
-        int n2 = right_array.length;
+        int [] arr1= bubble_srt(left_array, left_array.length);
+        int [] arr2= bubble_srt(right_array, right_array.length);
+        int n1 = arr1.length;
+        int n2 = arr2.length;
         int[] arr = new int[n1+n2];
 
         //merge both arrays
-        merge(left_array,right_array, left_array.length, right_array.length, arr);
+        merge(arr1,arr2, n1, n2, arr);
 
         // get the end time
         long end = System.nanoTime();
@@ -130,7 +210,6 @@ public class bubbleSort {
 
     }
 
-
-
+     */
 
 }
